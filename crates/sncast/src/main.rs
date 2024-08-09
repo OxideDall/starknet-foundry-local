@@ -43,6 +43,9 @@ struct Cli {
     #[clap(short = 'u', long = "url")]
     rpc_url: Option<String>,
 
+    #[clap(short = 's', long = "skip-build")]
+    skip_build: bool,
+
     /// Account to be used for contract declaration;
     /// When using keystore (`--keystore`), this should be a path to account file    
     /// When using accounts file, this should be an account name
@@ -168,6 +171,7 @@ async fn run_async_command(
                     scarb_toml_path: manifest_path,
                     json: cli.json,
                     profile: cli.profile.unwrap_or("dev".to_string()),
+                    skip_build: cli.skip_build,
                 },
             )
             .expect("Failed to build contract");
@@ -434,6 +438,7 @@ fn run_script_command(
                     scarb_toml_path: manifest_path.clone(),
                     json: cli.json,
                     profile: cli.profile.clone().unwrap_or("dev".to_string()),
+                    skip_build: cli.skip_build,
                 },
             )
             .expect("Failed to build script");

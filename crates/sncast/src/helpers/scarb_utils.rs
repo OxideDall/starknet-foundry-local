@@ -121,6 +121,7 @@ pub struct BuildConfig {
     pub scarb_toml_path: Utf8PathBuf,
     pub json: bool,
     pub profile: String,
+    pub skip_build: bool,
 }
 
 pub fn build(package: &PackageMetadata, config: &BuildConfig) -> Result<(), ScarbCommandError> {
@@ -150,7 +151,9 @@ pub fn build_and_load_artifacts(
     package: &PackageMetadata,
     config: &BuildConfig,
 ) -> Result<HashMap<String, StarknetContractArtifacts>> {
-    build(package, config).map_err(|e| anyhow!(format!("Failed to build using scarb; {e}")))?;
+    if !config.skip_build {
+        build(package, config).map_err(|e| anyhow!(format!("Failed to build using scarb; {e}")))?;
+    }
 
     let metadata = get_scarb_metadata_with_deps(&config.scarb_toml_path)?;
     if metadata.profiles.contains(&config.profile) {
